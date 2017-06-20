@@ -58,3 +58,35 @@ class UserInsertRunner(
         }
     }
 }
+
+
+@Service
+class UserService(val userRepository: UserRepository) {
+
+    fun getAllUsers(principal: Principal): List<Map<String, Any>> {
+        return userRepository
+                .findAll()
+                .map { mapOf("id" to it.id, "name" to it.name) }
+                .filter { it["name"] as String != principal.name }
+    }
+
+    fun giveToken(toUserId: Long, principal: Principal) {
+        val loggedInUser = userRepository.findOneByName(principal.name)
+
+        if (loggedInUser.toGive <= 0) {
+            return
+        } else {
+            val userToGive = userRepository.findById(toUserId)
+            loggedInUser transferTokenTo userToGive.get()
+            userRepository.save(loggedInUser)
+            userRepository.save(userToGive.get())
+        }
+    }
+
+    fun getData(principal: Principal): User = userRepository.findOneByName(principal.name)
+}
+
+infix fun User.transferTokenTo(userTo: User) {
+    this.toGive--
+    userTo.received++
+}
