@@ -2,6 +2,7 @@ package pl.arturczopek.devoxx
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.data.repository.CrudRepository
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -22,3 +23,11 @@ data class User(@Id @Column(name = "user_id") var id: Long = 0,
                 @Column(name = "received") var received: Int = 0,
                 @Column(name = "to_give") var toGive: Int = 10
 )
+
+
+interface UserRepository : CrudRepository<User, Long> {
+
+    override fun findAll(): List<User>
+
+    fun findOneByName(name: String): User
+}
