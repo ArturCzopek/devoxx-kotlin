@@ -19,8 +19,14 @@
             font-weight: bold;
         }
 
+        .user-data h3 {
+            font-weight: bold;
+            color: #5a7391;
+        }
+
         .user-data h4 {
             font-size: 20px;
+            color: #5b9bd1;
         }
 
         .red h3 {
@@ -122,8 +128,7 @@
                 "</div>" +
                 "</div>" +
                 "<div  class='profile-userbuttons'>" +
-                "<button type='button' onclick='sendGreenToken(" + user.id + ")'" + " class='btn btn-success btn-sm'>Give green</button>" +
-                "<button type='button' onclick='sendRedToken(" + user.id + ")'" + " class='btn btn-danger btn-sm'>Give Red</button>" +
+                "<button type='button' onclick='sendToken(" + user.id + ")'" + " class='btn btn-success btn-sm'>Give token</button>" +
                 "</div>" +
                 "</div>" +
                 "</div>")
@@ -140,25 +145,15 @@
     function loadUserData() {
         $.get("/me")
             .done(function (me) {
-                $("#receivedGreen").text(me.receivedGreen);
-                $("#receivedRed").text(me.receivedRed);
+                $("#received").text(me.received);
 
-                $("#toGiveGreen").text(me.greenToGive);
-                $("#toGiveRed").text(me.redToGive);
+                $("#toGive").text(me.toGive);
             });
     }
 
-    function sendRedToken(toUserId) {
-        sendToken('r', toUserId);
-    }
 
-
-    function sendGreenToken(toUserId) {
-        sendToken('g', toUserId);
-    }
-
-    function sendToken(tokenType, toUserId) {
-        $.post("/action", {type: tokenType, toUser: toUserId}).done(function () {
+    function sendToken(toUserId) {
+        $.post("/action", {toUser: toUserId}).done(function () {
             loadUserData()
         });
     }
@@ -186,30 +181,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="col-md-6 green">
-                        <h3>Received Green</h3>
-                        <h4 id="receivedGreen">-</h4>
-                    </div>
-                    <div class="col-md-6 red">
-                        <h3>Received Red</h3>
-                        <h4 id="receivedRed">-</h4>
-                    </div>
+                    <h3>Received tokens</h3>
+                    <h4 id="received">-</h4>
                 </div>
+
                 <div class="col-md-6">
-                    <div class="col-md-6 green">
-                        <h3>Green to give</h3>
-                        <h4 id="toGiveGreen">-</h4>
-                    </div>
-                    <div class="col-md-6 red">
-                        <h3>Red to give</h3>
-                        <h4 id="toGiveRed">-</h4>
-                    </div>
+                    <h3>Tokens to give</h3>
+                    <h4 id="toGive">-</h4>
                 </div>
             </div>
         </div>
     </div>
-    <div id="rows" class="row profile">
-    </div>
 </div>
+<div id="rows" class="row profile"></div>
 </body>
 </html>
